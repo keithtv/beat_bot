@@ -26,7 +26,6 @@ def getlastmention(twitterSession):
     mentions = session.mentions_timeline(count=1)
 
     for message in mentions:
-        #print("This is the message: " + message)
         last_id = message.id
         return last_id
 
@@ -43,7 +42,6 @@ def checktweets(twittersession, messageid, time):
     mentions = session.mentions_timeline(since_id=last_id, count=999)
 
     for message in mentions:
-        #print(message)
         messagetext = message.text.upper().replace(str(twitter_handle).upper(), '').split("-")
         if len(messagetext) > 1 and message.created_at >= starttime:
             tweets.append({'id': message.id, 'message': messagetext})
