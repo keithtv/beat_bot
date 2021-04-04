@@ -1,0 +1,14 @@
+---
+#update these variables with your account & key information.
+spotify:
+  username: "your username"
+  client_id: "your client id"
+  client_secret: "your client secret"
+  redirect_uri: "your redirect uri"
+
+twitter:
+  consumer_key: "your consumer key"
+  consumer_secret: "your consumer secret"
+  access_token: "your access token"
+  access_secret: "your access secret"
+  twitter_handle: "@your twitter handle"
