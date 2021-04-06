@@ -38,29 +38,26 @@ if __name__ == "__main__":
 
     # Create authentication tokens
     twitterLogin = twitterFunctions.twitterauthentication()
-    spotifyLoginModify = spotifyFunctions.spotifyauthentication('user-modify-playback-state')
-    spotifyLoginRead = spotifyFunctions.spotifyauthentication('user-read-playback-state')
+    spotifyLogin = spotifyFunctions.spotifyauthentication('user-read-playback-state user-modify-playback-state')
 
     # Get the last mention and last status
     lastMentionID = twitterFunctions.getlastmention(twitterLogin)
     lastTweetID = twitterFunctions.getlasttweetid(twitterLogin)
 
-    # Variable used for iteration tracking
-    i = 0
+    token_Expiration = 0
 
     # Start process in while loop - run indefinitely
     while True:
         # Create new authentication tokens periodically - every 30 min
-        i = i + 1
-        if i >= 60:
+        if (token_Expiration - time.time()) < 60:
+            print("Token is expiring in <1 min, refreshing token.")
             try:
-                spotifyLoginModify = spotifyFunctions.spotifyauthentication('user-modify-playback-state')
-                spotifyLoginRead = spotifyFunctions.spotifyauthentication('user-read-playback-state')
-                writelog('controllerlog', getCurrentTime() + ": Created new Spotify authentication tokens.")
-                i = 0
+                spotifyLogin, token_Expiration = spotifyFunctions.spotifyauthentication(
+                    'user-read-playback-state user-modify-playback-state')
+                print("Authentication Token Renewed.  Expires at: " + str(token_Expiration))
+                writelog('controllerlog', getCurrentTime() + ": Created new Spotify authentication token.")
             except:
-                writelog('controllerlog', getCurrentTime() + ": Something went wrong in renewing Spotify tokens.")
-                i = 0
+                writelog('controllerlog', getCurrentTime() + ": Something went wrong in renewing Spotify token.")
 
         # Log status
         writelog('controllerlog', getCurrentTime() + ": Looking for new tweets.")
@@ -74,8 +71,8 @@ if __name__ == "__main__":
                 else:
                     # Valid tweet - try adding to spotify playlist.  If successful reply to  user.
                     try:
-                        DeviceID = spotifyFunctions.getDeviceID(spotifyLoginRead)
-                        if spotifyFunctions.addToPlaylist(tweet['message'][0], tweet['message'][1], spotifyLoginModify, DeviceID) == True:
+                        DeviceID = spotifyFunctions.getDeviceID(spotifyLogin)
+                        if spotifyFunctions.addToPlaylist(tweet['message'][0], tweet['message'][1], spotifyLogin, DeviceID) == True:
                             twitterFunctions.replytorequest(twitterLogin, tweet['id'], "Your request has been added to the playlist.")
                             writelog('controllerlog',
                                      getCurrentTime() + ": A new request was added to the playlist:" + tweet['message'][
@@ -97,7 +94,7 @@ if __name__ == "__main__":
         # Check on currently playing song, update status if a new song is playing.
         try:
             # try to get the currently playng song
-            currentlyPlaying = spotifyFunctions.getCurrentlyPLaying(spotifyLoginRead)
+            currentlyPlaying = spotifyFunctions.getCurrentlyPLaying(spotifyLogin)
         except:
             # failure may occur if no devices are active on spotify -
             # in that case sleep the process then continue initial "while" loop.
