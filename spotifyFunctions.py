@@ -9,18 +9,22 @@ def spotifyauthentication(SpotifyScope):
     with open("beatbot_vars.yml") as f:
         tokendata = yaml.safe_load(f)
 
-    token = util.prompt_for_user_token(tokendata["spotify"]["username"],
-                               scope,
-                               client_id = tokendata["spotify"]["client_id"],
-                               client_secret = tokendata["spotify"]["client_secret"],
-                               redirect_uri = tokendata["spotify"]["redirect_uri"])
+    token = spotipy.oauth2.SpotifyOAuth(scope=scope,
+                                          client_id=tokendata["spotify"]["client_id"],
+                                          client_secret=tokendata["spotify"]["client_secret"],
+                                          redirect_uri=tokendata["spotify"]["redirect_uri"])
 
     if token:
-        sp = spotipy.Spotify(auth=token)
+        url = token.get_auth_response()
+        code = token.parse_response_code(url)
+        token_info = token.get_access_token(code)
+        accesstoken = token_info['access_token']
+        sp = spotipy.Spotify(auth=accesstoken)
+        token_expiration = token_info['expires_at']
     else:
         print("Can't get token for", tokendata["spotify"]["username"])
         return
-    return sp
+    return sp, token_expiration
 
 #Add track to playlists.  Requires Spotify token, track/artist name, and device ID
 def addToPlaylist(artistName,trackName,spSession, deviceID):
