@@ -88,8 +88,8 @@ if __name__ == "__main__":
             lastMentionID = tweets[len(tweets)-1]['id']
         else:
             writelog('controllerlog', getCurrentTime() + ": No new tweets found.")
-        # Sleep for 2 sec to allow spotify/twitter to update
-        time.sleep(2)
+        # Sleep for 3 sec to allow spotify/twitter to update
+        time.sleep(5)
 
         # Check on currently playing song, update status if a new song is playing.
         try:
@@ -98,7 +98,7 @@ if __name__ == "__main__":
         except:
             # failure may occur if no devices are active on spotify -
             # in that case sleep the process then continue initial "while" loop.
-            time.sleep(28)
+            time.sleep(25)
             continue
 
         # Get the last "currently playing" status, compare to what's playing now.  Update status if song has changed.
@@ -119,8 +119,8 @@ if __name__ == "__main__":
                     writelog('controllerlog', getCurrentTime() + ": Retweet successful.")
                 except:
                     writelog('controllerlog', getCurrentTime() + ": Retweet failed - skipping this status update.")
-                time.sleep(28)
+                time.sleep(25)
                 continue
         else:
             writelog('controllerlog', getCurrentTime() + ": Status is current - no need to update.")
-        time.sleep(28)
+        time.sleep(25)
