@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     # Start process in while loop - run indefinitely
     while True:
-        # Create new authentication tokens periodically - every 30 min
+        # Create new authentication tokens if expiration is in less than 1 minute
         if (token_Expiration - time.time()) < 60:
             print("Token is expiring in <1 min, refreshing token.")
             try:
