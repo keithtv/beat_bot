@@ -26,6 +26,7 @@ def spotifyauthentication(SpotifyScope):
         return
     return sp, token_expiration
 
+
 #Add track to playlists.  Requires Spotify token, track/artist name, and device ID
 def addToPlaylist(artistName,trackName,spSession, deviceID):
     session = spSession
@@ -42,6 +43,7 @@ def addToPlaylist(artistName,trackName,spSession, deviceID):
         print("I found a requests but you're not actively listening.  I let the requester know.")
         return False
 
+
 #Return track that is currently playing.  Requires Spotify token, track/artist name, and device ID
 def getCurrentlyPLaying(spSession):
     session = spSession
@@ -50,6 +52,7 @@ def getCurrentlyPLaying(spSession):
     playingSong = currentlyPlaying['item']['name']
     arstistandsong = playingSong + " by " + playingArtist
     return(arstistandsong)
+
 
 #Return active spotify device.  If none are active, default to desktop ID
 def getDeviceID(spSession):
