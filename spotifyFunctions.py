@@ -1,5 +1,5 @@
 import spotipy
-import spotipy.util as util
+#import spotipy.util as util
 import yaml
 
 #Create and return authentication token.  Scope defines permissions.
@@ -10,9 +10,9 @@ def spotifyauthentication(SpotifyScope):
         tokendata = yaml.safe_load(f)
 
     token = spotipy.oauth2.SpotifyOAuth(scope=scope,
-                                          client_id=tokendata["spotify"]["client_id"],
-                                          client_secret=tokendata["spotify"]["client_secret"],
-                                          redirect_uri=tokendata["spotify"]["redirect_uri"])
+        client_id=tokendata["spotify"]["client_id"],
+        client_secret=tokendata["spotify"]["client_secret"],
+        redirect_uri=tokendata["spotify"]["redirect_uri"])
 
     if token:
         url = token.get_auth_response()
